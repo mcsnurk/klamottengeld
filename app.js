@@ -16,6 +16,8 @@
   let purchases = [];
   let selectedYear = new Date().getFullYear();
   let selectedQuarter = Math.floor(new Date().getMonth() / 3) + 1;
+  let refreshInProgress = false;
+  let lastAutoRefreshAt = 0;
 
   function showScreen(id) {
     screens.forEach((screenId) => $(screenId).classList.toggle('hidden', screenId !== id));
@@ -90,7 +92,17 @@
 
     $('householdTitle').textContent = household.name || 'Klamottengeld';
     showScreen('appScreen');
-    await loadAll();
+    await refreshData();
+  }
+
+  function updateLastUpdated() {
+    const el = $('lastUpdated');
+    if (!el) return;
+    el.textContent = `Aktualisiert um ${new Intl.DateTimeFormat('de-DE', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    }).format(new Date())}`;
   }
 
   async function loadAll() {
@@ -107,12 +119,46 @@
     if (se || pe) {
       console.error(se || pe);
       toast('Daten konnten nicht geladen werden.');
-      return;
+      return false;
     }
 
     settings = s || [];
     purchases = p || [];
     render();
+    updateLastUpdated();
+    return true;
+  }
+
+  async function refreshData({ notify = false } = {}) {
+    if (!household || refreshInProgress) return false;
+
+    refreshInProgress = true;
+    const btn = $('refreshBtn');
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = '↻ Lädt…';
+    }
+
+    try {
+      const ok = await loadAll();
+      if (ok && notify) toast('Aktualisiert.');
+      return ok;
+    } finally {
+      refreshInProgress = false;
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = '↻ Aktualisieren';
+      }
+    }
+  }
+
+  function refreshWhenReturning() {
+    if (document.visibilityState !== 'visible' || !household) return;
+
+    const now = Date.now();
+    if (now - lastAutoRefreshAt < 1500) return;
+    lastAutoRefreshAt = now;
+    refreshData();
   }
 
   function render() {
@@ -204,6 +250,15 @@
       el.addEventListener('click', () => openPurchase(el.dataset.purchaseId));
     });
   }
+
+  $('refreshBtn').addEventListener('click', () => refreshData({ notify: true }));
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') refreshWhenReturning();
+  });
+
+  window.addEventListener('pageshow', refreshWhenReturning);
+  window.addEventListener('focus', refreshWhenReturning);
 
   $('prevQuarter').addEventListener('click', () => {
     selectedQuarter--;
@@ -347,7 +402,7 @@
 
     $('purchaseDialog').close();
     toast('Gespeichert.');
-    await loadAll();
+    await refreshData();
   });
 
   $('deletePurchaseBtn').addEventListener('click', async () => {
@@ -363,7 +418,7 @@
 
     $('purchaseDialog').close();
     toast('Einkauf gelöscht.');
-    await loadAll();
+    await refreshData();
   });
 
   init();

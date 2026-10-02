@@ -85,3 +85,11 @@ code { background: #eef2f3; padding: 2px 5px; border-radius: 5px; }
   .wide { grid-column: 1 / -1; }
   .split { grid-template-columns: 1fr 1fr; }
 }
+
+.refresh-btn { white-space: nowrap; padding: 9px 11px; flex: 0 0 auto; }
+.refresh-btn:disabled { opacity: .58; cursor: default; }
+.update-time { font-size: .72rem; margin-top: 3px; }
+.toolbar > div { min-width: 0; }
+@media (max-width: 380px) {
+  .refresh-btn { padding: 9px 10px; font-size: .82rem; }
+}

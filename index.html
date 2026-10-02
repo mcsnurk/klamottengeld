@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0f766e" />
   <title>Klamottengeld</title>
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="styles.css?v=2" />
+  <link rel="stylesheet" href="styles.css?v=3" />
 </head>
 <body>
   <div class="app-shell">
@@ -28,8 +28,9 @@
           <div>
             <div class="muted small">Gemeinsamer Bereich</div>
             <strong id="householdTitle">Klamottengeld</strong>
+            <div id="lastUpdated" class="muted update-time">Noch nicht aktualisiert</div>
           </div>
-          <span class="muted small">ohne Login</span>
+          <button id="refreshBtn" type="button" class="ghost refresh-btn" aria-label="Daten aktualisieren">↻ Aktualisieren</button>
         </div>
 
         <div class="quarter-nav">
@@ -96,6 +97,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js?v=2"></script>
-  <script src="app.js?v=2"></script>
+  <script src="app.js?v=3"></script>
 </body>
 </html>
