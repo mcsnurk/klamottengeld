@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f766e" />
+  <title>Klamottengeld</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">Familienbudget</div>
+        <h1>Klamottengeld</h1>
+      </div>
+      <button id="logoutBtn" class="ghost hidden">Abmelden</button>
+    </header>
+
+    <main>
+      <section id="configScreen" class="card hidden">
+        <h2>App noch nicht verbunden</h2>
+        <p>Trage zuerst deine Supabase-Daten in <code>config.js</code> ein. Danach kann die App gemeinsam genutzt werden.</p>
+      </section>
+
+      <section id="authScreen" class="card hidden">
+        <div class="tabs">
+          <button class="tab active" data-auth-tab="login">Anmelden</button>
+          <button class="tab" data-auth-tab="signup">Registrieren</button>
+        </div>
+        <form id="authForm" class="stack">
+          <label>E-Mail<input id="email" type="email" autocomplete="email" required /></label>
+          <label>Passwort<input id="password" type="password" minlength="6" autocomplete="current-password" required /></label>
+          <button id="authSubmit" class="primary" type="submit">Anmelden</button>
+          <p id="authHint" class="muted small"></p>
+        </form>
+      </section>
+
+      <section id="onboardingScreen" class="hidden">
+        <div class="card">
+          <h2>Familie einrichten</h2>
+          <p>Erstelle einen gemeinsamen Bereich oder tritt mit einem Familiencode bei.</p>
+          <div class="split">
+            <form id="createHouseholdForm" class="stack">
+              <h3>Neu anlegen</h3>
+              <label>Name<input id="householdName" value="Klamottengeld" maxlength="80" required /></label>
+              <button class="primary" type="submit">Familie anlegen</button>
+            </form>
+            <form id="joinHouseholdForm" class="stack">
+              <h3>Beitreten</h3>
+              <label>Familiencode<input id="joinCode" maxlength="12" placeholder="z. B. AB12CD34" required /></label>
+              <button class="secondary" type="submit">Mit Code beitreten</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section id="appScreen" class="hidden">
+        <div class="toolbar card compact">
+          <div>
+            <div class="muted small">Gemeinsamer Bereich</div>
+            <strong id="householdTitle">Klamottengeld</strong>
+          </div>
+          <button id="showCodeBtn" class="ghost">Familiencode</button>
+        </div>
+
+        <div class="quarter-nav">
+          <button id="prevQuarter" class="icon-btn" aria-label="Vorheriges Quartal">‹</button>
+          <div>
+            <div class="muted small">Ausgewähltes Quartal</div>
+            <strong id="quarterLabel">Q4 2026</strong>
+          </div>
+          <button id="nextQuarter" class="icon-btn" aria-label="Nächstes Quartal">›</button>
+        </div>
+
+        <div id="budgetCards" class="budget-grid"></div>
+
+        <button id="addPurchaseBtn" class="fab">＋ Einkauf eintragen</button>
+
+        <section class="section-head">
+          <div>
+            <h2>Einkäufe</h2>
+            <p class="muted small">Antippen zum Bearbeiten</p>
+          </div>
+        </section>
+        <div id="purchaseList" class="purchase-list"></div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="purchaseDialog">
+    <form id="purchaseForm" method="dialog" class="dialog-card">
+      <div class="dialog-head">
+        <div>
+          <div class="eyebrow">Buchung</div>
+          <h2 id="purchaseDialogTitle">Einkauf eintragen</h2>
+        </div>
+        <button type="button" class="icon-btn" data-close-dialog>×</button>
+      </div>
+      <input id="purchaseId" type="hidden" />
+      <div class="form-grid">
+        <label>Datum<input id="purchaseDate" type="date" required /></label>
+        <label>Geschäft<input id="merchant" maxlength="120" placeholder="z. B. Zalando" /></label>
+        <label class="wide">Bestell-/Rechnungsnummer<input id="invoiceNumber" maxlength="120" /></label>
+      </div>
+
+      <div class="items-head">
+        <h3>Positionen</h3>
+        <button id="addItemBtn" type="button" class="ghost">＋ Position</button>
+      </div>
+      <div id="itemsContainer" class="items"></div>
+      <label>Notiz<textarea id="notes" rows="2" maxlength="500"></textarea></label>
+
+      <div class="dialog-actions">
+        <button id="deletePurchaseBtn" type="button" class="danger hidden">Löschen</button>
+        <div class="spacer"></div>
+        <button type="button" class="ghost" data-close-dialog>Abbrechen</button>
+        <button type="submit" class="primary">Speichern</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="codeDialog">
+    <div class="dialog-card small-dialog">
+      <div class="dialog-head"><h2>Familiencode</h2><button type="button" class="icon-btn" data-close-code>×</button></div>
+      <p>Mit diesem Code können sich weitere Familienmitglieder nach ihrer Registrierung verbinden.</p>
+      <div id="familyCode" class="family-code">--------</div>
+      <button id="copyCodeBtn" class="primary full">Code kopieren</button>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
