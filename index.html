@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0f766e" />
   <title>Klamottengeld</title>
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=2" />
 </head>
 <body>
   <div class="app-shell">
@@ -15,45 +15,12 @@
         <div class="eyebrow">Familienbudget</div>
         <h1>Klamottengeld</h1>
       </div>
-      <button id="logoutBtn" class="ghost hidden">Abmelden</button>
     </header>
 
     <main>
       <section id="configScreen" class="card hidden">
         <h2>App noch nicht verbunden</h2>
-        <p>Trage zuerst deine Supabase-Daten in <code>config.js</code> ein. Danach kann die App gemeinsam genutzt werden.</p>
-      </section>
-
-      <section id="authScreen" class="card hidden">
-        <div class="tabs">
-          <button class="tab active" data-auth-tab="login">Anmelden</button>
-          <button class="tab" data-auth-tab="signup">Registrieren</button>
-        </div>
-        <form id="authForm" class="stack">
-          <label>E-Mail<input id="email" type="email" autocomplete="email" required /></label>
-          <label>Passwort<input id="password" type="password" minlength="6" autocomplete="current-password" required /></label>
-          <button id="authSubmit" class="primary" type="submit">Anmelden</button>
-          <p id="authHint" class="muted small"></p>
-        </form>
-      </section>
-
-      <section id="onboardingScreen" class="hidden">
-        <div class="card">
-          <h2>Familie einrichten</h2>
-          <p>Erstelle einen gemeinsamen Bereich oder tritt mit einem Familiencode bei.</p>
-          <div class="split">
-            <form id="createHouseholdForm" class="stack">
-              <h3>Neu anlegen</h3>
-              <label>Name<input id="householdName" value="Klamottengeld" maxlength="80" required /></label>
-              <button class="primary" type="submit">Familie anlegen</button>
-            </form>
-            <form id="joinHouseholdForm" class="stack">
-              <h3>Beitreten</h3>
-              <label>Familiencode<input id="joinCode" maxlength="12" placeholder="z. B. AB12CD34" required /></label>
-              <button class="secondary" type="submit">Mit Code beitreten</button>
-            </form>
-          </div>
-        </div>
+        <p>Die Verbindung zu Supabase konnte noch nicht hergestellt werden.</p>
       </section>
 
       <section id="appScreen" class="hidden">
@@ -62,7 +29,7 @@
             <div class="muted small">Gemeinsamer Bereich</div>
             <strong id="householdTitle">Klamottengeld</strong>
           </div>
-          <button id="showCodeBtn" class="ghost">Familiencode</button>
+          <span class="muted small">ohne Login</span>
         </div>
 
         <div class="quarter-nav">
@@ -98,7 +65,9 @@
         </div>
         <button type="button" class="icon-btn" data-close-dialog>×</button>
       </div>
+
       <input id="purchaseId" type="hidden" />
+
       <div class="form-grid">
         <label>Datum<input id="purchaseDate" type="date" required /></label>
         <label>Geschäft<input id="merchant" maxlength="120" placeholder="z. B. Zalando" /></label>
@@ -109,7 +78,9 @@
         <h3>Positionen</h3>
         <button id="addItemBtn" type="button" class="ghost">＋ Position</button>
       </div>
+
       <div id="itemsContainer" class="items"></div>
+
       <label>Notiz<textarea id="notes" rows="2" maxlength="500"></textarea></label>
 
       <div class="dialog-actions">
@@ -121,19 +92,10 @@
     </form>
   </dialog>
 
-  <dialog id="codeDialog">
-    <div class="dialog-card small-dialog">
-      <div class="dialog-head"><h2>Familiencode</h2><button type="button" class="icon-btn" data-close-code>×</button></div>
-      <p>Mit diesem Code können sich weitere Familienmitglieder nach ihrer Registrierung verbinden.</p>
-      <div id="familyCode" class="family-code">--------</div>
-      <button id="copyCodeBtn" class="primary full">Code kopieren</button>
-    </div>
-  </dialog>
-
   <div id="toast" class="toast hidden"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js"></script>
-  <script src="app.js"></script>
+  <script src="config.js?v=2"></script>
+  <script src="app.js?v=2"></script>
 </body>
 </html>
